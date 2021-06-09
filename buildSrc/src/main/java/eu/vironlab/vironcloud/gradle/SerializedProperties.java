@@ -47,6 +47,13 @@ public class SerializedProperties {
     private List<String> dependencies;
     private String version;
 
+    public SerializedProperties(List<String> repositories, List<String> dependencies, String version) {
+        this.repositories = repositories;
+        this.dependencies = dependencies;
+        this.version = version;
+    }
+
+
     public SerializedProperties(List<String> repositories, List<String> modules, List<String> dependencies, String version) {
         this.repositories = repositories;
         this.modules = modules;

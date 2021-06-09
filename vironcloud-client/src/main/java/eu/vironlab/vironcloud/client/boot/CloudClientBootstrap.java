@@ -27,6 +27,8 @@
  *   You should have received a copy of the GNU General Public License<p>
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.<p>
  *<p>
+ *   Creation: Dienstag 08 Juni 2021 21:29:09<p>
+ *<p>
  *   Contact:<p>
  *<p>
  *     Discordserver:   https://discord.gg/wvcX92VyEH<p>
@@ -39,5 +41,8 @@ package eu.vironlab.vironcloud.client.boot;
 
 public class CloudClientBootstrap {
 
+    public static void main(String[] args) {
+
+    }
 
 }

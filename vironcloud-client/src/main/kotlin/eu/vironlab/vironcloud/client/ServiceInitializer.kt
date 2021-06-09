@@ -40,4 +40,9 @@
 package eu.vironlab.vironcloud.client
 
 class ServiceInitializer {
+
+    companion object {
+
+    }
+
 }

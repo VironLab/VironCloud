@@ -42,11 +42,11 @@ package eu.vironlab.vironcloud.gradle
 fun getDependency(groupName: String, name: String): String {
     val group = Properties.dependencies[groupName] ?: throw DependencyGroupNotFoundException(groupName)
     val dependency = group[name] ?: throw DependencyNotFoundException(name)
-    return if (dependency.contains("%version%")) {
+    return if (dependency.second.contains("%version%")) {
         val version = Properties.versions[groupName] ?: throw NoVersionFoundException(groupName)
-        dependency.replace("%version%", version)
+        dependency.second.replace("%version%", version)
     } else {
-        dependency
+        dependency.second
     }
 }
 

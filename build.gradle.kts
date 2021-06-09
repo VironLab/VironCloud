@@ -1,5 +1,3 @@
-import eu.vironlab.vironcloud.gradle.Properties
-import eu.vironlab.vironcloud.gradle.getDependency
 import kotlin.collections.*
 
 buildscript {

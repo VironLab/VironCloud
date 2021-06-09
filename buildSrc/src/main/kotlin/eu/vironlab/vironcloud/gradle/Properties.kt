@@ -39,8 +39,6 @@
 
 package eu.vironlab.vironcloud.gradle
 
-import eu.vironlab.vironcloud.gradle.SerializedProperties
-
 object Properties {
 
     @JvmStatic
@@ -77,34 +75,50 @@ object Properties {
     }
 
     @JvmStatic
-    val dependencies: MutableMap<String, MutableMap<String, String>> =
-        mutableMapOf<String, MutableMap<String, String>>().also {
+    val dependencies: MutableMap<String, MutableMap<String, Pair<Boolean, String>>> =
+        mutableMapOf<String, MutableMap<String, Pair<Boolean, String>>>().also {
             it["kotlin"] = mutableMapOf(
-                Pair("stdlib", "org.jetbrains.kotlin:kotlin-stdlib:%version%"),
-                Pair("serialization", "org.jetbrains.kotlin:kotlin-serialization:%version%")
+                Pair("stdlib", Pair(true, "org.jetbrains.kotlin:kotlin-stdlib:%version%")),
+                Pair("serialization", Pair(true, "org.jetbrains.kotlin:kotlin-serialization:%version%"))
             )
             it["google"] = mutableMapOf(
-                Pair("gson", "com.google.code.gson:gson:2.8.6"),
-                Pair("guice", "com.google.inject:guice:5.0.1"),
-                Pair("guava", "com.google.guava:guava:30.1.1-jre"),
-                Pair("guava-failureaccess", "com.google.guava:failureaccess:1.0.1")
+                Pair("gson", Pair(true, "com.google.code.gson:gson:2.8.6")),
+                Pair("guice", Pair(false, "com.google.inject:guice:5.0.1")),
+                Pair("guava", Pair(false, "com.google.guava:guava:30.1.1-jre")),
+                Pair("guava-failureaccess", Pair(false, "com.google.guava:failureaccess:1.0.1"))
             )
             it["javax"] = mutableMapOf(
-                Pair("inject", "javax.inject:javax.inject:1")
+                Pair("inject", Pair(false, "javax.inject:javax.inject:1"))
             )
             it["aopalliance"] = mutableMapOf(
-                Pair("aopalliance", "aopalliance:aopalliance:1.0")
+                Pair("aopalliance", Pair(false, "aopalliance:aopalliance:1.0"))
             )
             it["vextension"] = mutableMapOf(
-                Pair("common", "eu.vironlab.vextension:vextension-common:%version%")
+                Pair("common", Pair(true, "eu.vironlab.vextension:vextension-common:%version%"))
             )
             it["kotlinx"] = mutableMapOf(
-                Pair("coroutines-core", "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+                Pair("coroutines-core", Pair(true, "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"))
             )
             it["lettuce"] = mutableMapOf(
-                Pair("core", "io.lettuce:lettuce-core:6.1.0.RELEASE")
+                Pair("core", Pair(true, "io.lettuce:lettuce-core:6.1.0.RELEASE"))
             )
         }
+
+    @JvmStatic
+    fun serializeForClient(): SerializedProperties {
+        val depend: MutableList<String> = mutableListOf()
+        dependencies.keys.forEach { key ->
+            val entries = dependencies[key]!!
+            entries.filterValues { it.first }.keys.forEach { entryKey ->
+                depend.add(getDependency(key, entryKey))
+            }
+        }
+        return SerializedProperties(
+            repositories,
+            depend,
+            version
+        )
+    }
 
     @JvmStatic
     fun serialize(): SerializedProperties {
