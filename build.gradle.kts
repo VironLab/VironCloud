@@ -1,4 +1,5 @@
 import kotlin.collections.*
+import eu.vironlab.vironcloud.gradle.*
 
 buildscript {
     repositories {
@@ -14,10 +15,14 @@ buildscript {
 //Define Plugins
 plugins {
     id("java")
-    id("maven")
+    id("maven-publish")
     kotlin("jvm") version "1.5.10"
     kotlin("kapt") version "1.5.10"
     id("org.jetbrains.dokka") version "1.4.32"
+}
+//Configure build of docs
+tasks.dokkaHtmlMultiModule.configure {
+    outputDirectory.set(File(rootProject.buildDir.path, "vextension-v2.0.0"))
 }
 
 //Define Variables for all Projects
@@ -42,18 +47,69 @@ allprojects {
 //Default configuration for each module
 subprojects {
     apply(plugin = "java")
-    apply(plugin = "maven")
+    apply(plugin = "maven-publish")
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jetbrains.kotlin.kapt")
     apply(plugin = "org.jetbrains.dokka")
 
     dependencies {
-        compileOnly(eu.vironlab.vironcloud.gradle.getDependency("kotlin", "stdlib"))
-        compileOnly(eu.vironlab.vironcloud.gradle.getDependency("kotlin", "serialization"))
-        compileOnly(eu.vironlab.vironcloud.gradle.getDependency("kotlinx", "coroutines-core"))
-        compileOnly(eu.vironlab.vironcloud.gradle.getDependency("google", "gson"))
-        compileOnly(eu.vironlab.vironcloud.gradle.getDependency("google", "guice"))
-        compileOnly(eu.vironlab.vironcloud.gradle.getDependency("vextension", "common"))
+        compileOnly(getDependency("kotlin", "stdlib"))
+        compileOnly(getDependency("kotlin", "serialization"))
+        compileOnly(getDependency("kotlinx", "coroutines-core"))
+        compileOnly(getDependency("google", "gson"))
+        compileOnly(getDependency("google", "guice"))
+        compileOnly(getDependency("vextension", "common"))
+    }
+
+    if (System.getProperty("publishName") != null && System.getProperty("publishPassword") != null) {
+        publishing {
+            publications {
+                create<MavenPublication>(project.name) {
+                    artifact("${project.buildDir}/libs/${project.name}-sources.jar") {
+                        extension = "sources"
+                    }
+                    artifact("${project.buildDir}/libs/${project.name}.jar") {
+                        extension = "jar"
+                    }
+                    groupId = Properties.group
+                    artifactId = project.name
+                    version = Properties.version
+                    pom {
+                        name.set(project.name)
+                        url.set("https://github.com/VironLab/VironCloud")
+                        properties.put("inceptionYear", "2021")
+                        licenses {
+                            license {
+                                name.set("General Public License (GPL v3.0)")
+                                url.set("https://www.gnu.org/licenses/gpl-3.0.txt")
+                                distribution.set("repo")
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set("Infinity_dev")
+                                name.set("Florin Dornig")
+                                email.set("infinitydev@vironlab.eu")
+                            }
+                            developer {
+                                id.set("SteinGaming")
+                                name.set("Danial Daryab")
+                                email.set("steingaming@vironlab.eu")
+                            }
+                        }
+                    }
+                }
+                repositories {
+                    maven("https://repo.vironlab.eu/repository/maven-snapshot/") {
+                        this.name = "vironlab-snapshot"
+                        credentials {
+                            this.password = System.getProperty("publishPassword")
+                            this.username = System.getProperty("publishName")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     tasks {
@@ -77,44 +133,14 @@ subprojects {
                     attributes["VironLab-ProjectID"] = "vironcloud_v1"
                 }
             }
-            doLast {
-                //Generate the Pom file for the Repository
-                maven.pom {
-                    withGroovyBuilder {
-                        "project" {
-                            groupId = eu.vironlab.vironcloud.gradle.Properties.group
-                            artifactId = project.name
-                            version = eu.vironlab.vironcloud.gradle.Properties.version
-                            this.setProperty("inceptionYear", "2021")
-                            "licenses" {
-                                "license" {
-                                    setProperty("name", "General Public License (GPL v3.0)")
-                                    setProperty("url", "https://www.gnu.org/licenses/gpl-3.0.txt")
-                                    setProperty("distribution", "repo")
-                                }
-                            }
-                            "developers" {
-                                "developer" {
-                                    setProperty("id", "Infinity_dev")
-                                    setProperty("name", "Florin Dornig")
-                                    setProperty("email", "florin.dornig@gmx.de")
-                                }
-                            }
-                        }
-                    }
-
-                }.writeTo("build/pom/pom.xml")
-            }
         }
 
         compileKotlin {
-            kotlinOptions.jvmTarget = "11"
-
+            kotlinOptions.jvmTarget = "16"
         }
         withType<JavaCompile> {
             this.options.encoding = "UTF-8"
         }
     }
-
 
 }

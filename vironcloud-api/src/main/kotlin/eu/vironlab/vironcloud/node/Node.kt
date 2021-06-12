@@ -39,7 +39,13 @@
 
 package eu.vironlab.vironcloud.node
 
-import eu.vironlab.vironcloud.common.network.Connection
+import eu.vironlab.vironcloud.common.network.InternalConnection
 
-interface Node : Connection {
+interface Node : InternalConnection {
+
+    val idCurrentMain: Boolean
+
+    override val group: String
+        get() = "Node"
+
 }

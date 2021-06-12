@@ -1,6 +1,4 @@
 import com.google.gson.GsonBuilder
-import eu.vironlab.vironcloud.gradle.Properties
-import eu.vironlab.vironcloud.gradle.getDependency
 import java.io.FileWriter
 import java.nio.file.Files
 
@@ -8,9 +6,14 @@ val includeIntoLauncher by configurations.creating {
     setTransitive(false)
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
+}
 
 dependencies {
     includeIntoLauncher(eu.vironlab.vironcloud.gradle.getDependency("google", "gson"))
+    includeIntoLauncher(eu.vironlab.vironcloud.gradle.getDependency("vextension", "common"))
 }
 
 tasks {
@@ -20,9 +23,11 @@ tasks {
                 eu.vironlab.vironcloud.gradle.Properties.modules.add(proj.name)
             }
         }
-        copy {
-            from(zipTree(includeIntoLauncher.singleFile))
-            into("${project.buildDir}/classes/java/main")
+        for (file in includeIntoLauncher.files) {
+            copy {
+                from(zipTree(file))
+                into("${project.buildDir}/classes/java/main")
+            }
         }
         dependsOn(":vironcloud:build")
         val modules = project(":vironcloud-modules").subprojects

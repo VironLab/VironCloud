@@ -39,16 +39,31 @@
 
 package eu.vironlab.vironcloud.common.network
 
+import eu.vironlab.vextension.concurrent.task.QueuedTask
+import eu.vironlab.vextension.document.Document
 import eu.vironlab.vironcloud.common.network.packet.Packet
+import kotlin.reflect.KClass
 
 interface NetworkManager {
 
-    fun registerPacketSync(packet: Packet)
+    fun <T> registerPacket(packet: Packet<T>): NetworkManager
 
-    fun registerPacketAsync(packet: Packet)
+    fun sendPacketToGroupSync(service: InternalConnection, packet: Packet<*>)
 
-    fun sendPacketSync(connection: Connection, packet: Packet)
+    fun sendPacketGroupAsync(service: InternalConnection, packet: Packet<*>)
 
-    fun sendPacketAsync(connection: Connection, packet: Packet)
+    fun sendPacketSync(service: InternalConnection, packet: Packet<*>)
+
+    fun sendPacketAsync(service: InternalConnection, packet: Packet<*>)
+
+    fun <T : Any> sendQuery(connection: InternalConnection, query: Packet<T>, answer: KClass<T>): QueuedTask<T?>
+
+    fun subscribeSync(channel: String, action: (Document) -> Unit): NetworkManager
+
+    fun subscribeAsync(channel: String, action: (Document) -> Unit): NetworkManager
+
+    fun unsubscribe(channel: String)
+
+    fun isChannelRegistered(channel: String): Boolean
 
 }

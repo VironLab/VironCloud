@@ -52,20 +52,18 @@ object Properties {
 
     @JvmStatic
     val repositories = arrayListOf<String>(
-        "https://dl.bintray.com/kotlin/kotlinx/",
-        "https://dl.bintray.com/kotlin/ktor/",
-        "https://repo1.maven.org/maven2/",
-        "https://oss.sonatype.org/content/repositories/snapshots/",
-        "https://repo.vironlab.eu/repository/maven-snapshot/"
+        Repositories.KOTLINX,
+        Repositories.KTOR,
+        Repositories.MAVEN_CENTRAL,
+        Repositories.SONATYPE,
+        Repositories.VIRONLAB_SNAPSHOT
     )
 
     @JvmStatic
     val minecraftRepositories = arrayListOf<String>(
-        "https://repo.spongepowered.org/maven/",
-        "https://hub.spigotmc.org/nexus/content/repositories/snapshots/",
-        "https://oss.sonatype.org/content/repositories/snapshots/",
-        "https://repo.velocitypowered.com/snapshots/"
-
+        Repositories.MINECRAFT_SPIGOT,
+        Repositories.MINECRAFT_SPONGE,
+        Repositories.MINECRAFT_VELOCITY
     )
 
     @JvmStatic

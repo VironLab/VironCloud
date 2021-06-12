@@ -4,6 +4,10 @@ import java.nio.file.Files
 val includeIntoClient by configurations.creating {
     setTransitive(false)
 }
+java {
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
+}
 
 
 dependencies {
@@ -11,11 +15,10 @@ dependencies {
     compileOnly(project(":vironcloud-common"))
     compileOnly(project(":vironcloud-api"))
     compileOnly("com.velocitypowered:velocity-api:1.1.8")
-    kapt("com.velocitypowered:velocity-api:1.1.8")
-    compileOnly("org.spongepowered:spongeapi:7.2.0")
-    kapt("org.spongepowered:spongeapi:7.2.0")
+    //kapt("com.velocitypowered:velocity-api:1.1.8")
+    compileOnly("org.spongepowered:spongeapi:8.0.0-SNAPSHOT")
+    //kapt("org.spongepowered:spongeapi:8.0.0-SNAPSHOT")
 }
-
 tasks {
     jar {
         for (proj in arrayOf("common", "api")) {

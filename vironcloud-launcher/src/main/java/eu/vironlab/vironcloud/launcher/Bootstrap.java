@@ -61,7 +61,8 @@ public class Bootstrap {
 
     public static void main(String[] args) throws IOException {
         System.out.println("Starting VironCloud... ");
-        libDir = new File(".libs");
+        String libFileName = System.getProperty("cloudLibDir") != null ? System.getProperty("cloudLibDir") : ".libs";
+        libDir = new File(libFileName);
         if (!libDir.exists()) {
             Files.createDirectories(libDir.toPath());
         }

@@ -43,11 +43,11 @@ import eu.vironlab.vextension.document.Document
 import eu.vironlab.vextension.document.document
 import java.sql.Connection
 
-abstract class Packet {
+abstract class Packet<R> {
 
     var document: Document = document()
 
-    abstract fun handleIncomming(doc: Document, source: Connection)
+    abstract fun handleIncomming(doc: Document, source: Connection): R
 
     internal fun serialize(): String = this.document.toJson()
 

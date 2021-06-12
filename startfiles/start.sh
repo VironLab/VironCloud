@@ -1,0 +1,1 @@
+screen -RS VironCloud java -XX:CompileThreshold=100 -DextensionDir=extensions -DcloudLibDir=.libs -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -Dfile.encoding=UTF-8 -Xms256m -Xmx512M -jar vironcloud-launcher.jar
